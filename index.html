@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Резюме frontend-разработчика Давида Мурадяна">
+<title>Резюме Давида Мурадяна</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;700&display=swap">
+<style>
+:root {
+  --bg: #eef0f3;
+  --surface: #ffffff;
+  --ink: #0f1319;
+  --muted: #5a6371;
+  --line: #d3d9e0;
+  --accent: #1f5bff;
+  --on-accent: #ffffff;
+
+  --font-display: "Unbounded", "Arial Black", "Segoe UI", sans-serif;
+  --font-body: "Golos Text", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --gutter: 16px;
+  --container: 1200px;
+  --header-h: 56px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c0f14; --surface: #151a22; --ink: #e9edf2; --muted: #9aa4b2;
+    --line: #272e39; --accent: #6b97ff; --on-accent: #0c0f14;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c0f14; --surface: #151a22; --ink: #e9edf2; --muted: #9aa4b2;
+  --line: #272e39; --accent: #6b97ff; --on-accent: #0c0f14;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+[id] { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + var(--header-h) + 24px); }
+
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.header::before {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 100%;
+  width: 100%; height: 200px;
+  background: var(--bg);
+}
+.header__inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--header-h);
+}
+.header__logo {
+  font: 700 14px/1 var(--font-display);
+  letter-spacing: .02em;
+}
+.header__viewport {
+  margin-left: auto;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  font: 500 11px/1 var(--font-mono);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.header__progress {
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 100%; height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.burger {
+  position: relative;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.burger__line {
+  position: absolute;
+  left: 9px;
+  width: 22px; height: 2px;
+  background: var(--ink);
+  transition: transform .3s var(--ease), top .3s var(--ease);
+}
+.burger__line:nth-child(1) { top: 15px; }
+.burger__line:nth-child(2) { top: 23px; }
+.burger[aria-expanded="true"] .burger__line:nth-child(1) { top: 19px; transform: rotate(45deg); }
+.burger[aria-expanded="true"] .burger__line:nth-child(2) { top: 19px; transform: rotate(-45deg); }
+
+.nav {
+  position: absolute;
+  top: 100%; left: 0;
+  width: 100%;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity .25s var(--ease), transform .25s var(--ease), visibility .25s;
+}
+.nav--open { visibility: visible; opacity: 1; transform: none; }
+.nav__list { display: flex; flex-direction: column; padding: 8px var(--gutter) 16px; }
+.nav__link {
+  display: block;
+  padding: 12px 0;
+  font-weight: 500;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero { padding-block: 40px 56px; }
+.hero__inner {
+  display: grid;
+  grid-template-areas: "head" "photo" "body";
+  gap: 32px;
+}
+.hero__head { grid-area: head; min-width: 0; }
+.hero__body { grid-area: body; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
+.hero__eyebrow {
+  display: block;
+  margin-bottom: 16px;
+  font: 500 12px/1.4 var(--font-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero__title {
+  font: 700 clamp(2.25rem, 10.4vw, 5.75rem)/1.02 var(--font-display);
+  letter-spacing: -.02em;
+}
+.hero__line { display: block; overflow: hidden; padding-bottom: .08em; }
+.hero__word { display: block; animation: rise .9s var(--ease) both; }
+.hero__line:nth-child(2) .hero__word { animation-delay: .1s; color: var(--accent); }
+.hero__lead { max-width: 56ch; font-size: 17px; color: var(--muted); animation: fade .8s .35s var(--ease) both; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; animation: fade .8s .45s var(--ease) both; }
+.hero__facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid var(--line);
+  animation: fade .8s .55s var(--ease) both;
+}
+
+.fact { padding-block: 14px; border-bottom: 1px solid var(--line); display: flex; align-items: baseline; gap: 16px; }
+.fact__value {
+  flex: 0 0 9.5ch;
+  font: 500 17px/1.2 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.fact__label { font-size: 14px; color: var(--muted); }
+
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid var(--ink);
+  background: none;
+  font-weight: 500;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color .35s var(--ease), border-color .35s var(--ease);
+}
+.button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent);
+  transform: translateY(101%);
+  transition: transform .35s var(--ease);
+}
+.button--primary { background: var(--ink); color: var(--bg); }
+.button__arrow { transition: transform .35s var(--ease); }
+@media (hover: hover) {
+  .button:hover { color: var(--on-accent); border-color: var(--accent); }
+  .button:hover::before { transform: none; }
+  .button:hover .button__arrow { transform: translate(3px, -3px); }
+}
+
+.hero__photo { grid-area: photo; }
+.photo {
+  width: min(100%, 280px);
+  animation: fade-in .6s .2s var(--ease) both;
+  transition: transform .3s var(--ease);
+  will-change: transform;
+}
+.photo__img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  box-shadow: 0 24px 48px -24px color-mix(in srgb, var(--ink) 45%, transparent);
+  animation: unveil 1.1s .25s var(--ease) both;
+}
+
+.section { padding-block: 48px; border-top: 1px solid var(--line); }
+.section__inner { display: grid; gap: 28px; }
+.section__title {
+  font: 500 clamp(1.25rem, 4.6vw, 1.625rem)/1.2 var(--font-display);
+  letter-spacing: -.01em;
+  text-wrap: balance;
+}
+.section__content { min-width: 0; display: grid; gap: 32px; }
+
+.job {
+  position: relative;
+  display: grid;
+  gap: 20px;
+  padding: 24px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  isolation: isolate;
+}
+.job::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
+  opacity: 0;
+  transition: opacity .4s var(--ease);
+}
+.job::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 3px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+}
+@media (hover: hover) { .job:hover::before { opacity: 1; } }
+.job__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 24px; }
+.job__company { font: 600 22px/1.3 var(--font-body); }
+.job__role { color: var(--muted); }
+.job__period { font: 500 13px/1.4 var(--font-mono); color: var(--muted); }
+.job__body { display: grid; gap: 24px; }
+.job__text { max-width: 68ch; }
+
+.metric { display: grid; gap: 10px; align-content: start; }
+.metric__row { display: grid; grid-template-columns: 5.5ch 1fr 5ch; align-items: center; gap: 12px; font: 500 13px/1 var(--font-mono); }
+.metric__label { color: var(--muted); }
+.metric__track { height: 14px; background: var(--line); }
+.metric__bar { display: block; height: 100%; width: calc(var(--value) / 3.2 * 100%); background: var(--muted); transform-origin: 0 50%; }
+.metric__bar--accent { background: var(--accent); }
+.metric__value { text-align: right; font-variant-numeric: tabular-nums; }
+.metric__caption { font: 500 12px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+.skills { display: grid; grid-template-columns: 1fr; gap: 0 32px; }
+.skills__group { padding-block: 18px; border-top: 1px solid var(--line); display: grid; gap: 12px; align-content: start; }
+.skills__name { font: 500 12px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.skills__list { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 14px;
+  line-height: 1.3;
+  transition: transform .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+}
+@media (hover: hover) {
+  .chip:hover { transform: translateY(-3px); border-color: var(--accent); color: var(--accent); }
+}
+
+.timeline { display: grid; }
+.timeline__item {
+  display: grid;
+  grid-template-columns: 6ch 1fr;
+  gap: 4px 20px;
+  padding-block: 18px;
+  border-top: 1px solid var(--line);
+}
+.timeline__year { font: 500 13px/1.75 var(--font-mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+.timeline__body { min-width: 0; display: grid; gap: 4px; }
+.timeline__title { font: 600 17px/1.35 var(--font-body); }
+.timeline__text { color: var(--muted); font-size: 15px; }
+
+.prose { display: grid; gap: 16px; max-width: 65ch; }
+.prose__lead { font-size: 19px; line-height: 1.5; }
+.prose__text { color: var(--muted); }
+
+.contacts { display: grid; }
+.contacts__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 20px;
+  padding-block: 16px;
+  border-top: 1px solid var(--line);
+}
+.contacts__label { flex: 0 0 9ch; font: 500 12px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.contacts__value { font-size: clamp(1rem, 4.4vw, 1.375rem); font-weight: 500; overflow-wrap: anywhere; user-select: all; }
+.contacts__copy {
+  margin-left: auto;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  background: none;
+  font: 500 12px/1 var(--font-mono);
+  color: var(--muted);
+  transition: color .2s, border-color .2s;
+}
+.contacts__copy--done { color: var(--accent); border-color: var(--accent); }
+
+.link {
+  background: linear-gradient(var(--accent), var(--accent)) 0 100% / 100% 1px no-repeat;
+  transition: background-size .35s var(--ease), color .35s var(--ease);
+}
+@media (hover: hover) {
+  .link:hover { background-size: 100% 100%; color: var(--on-accent); }
+  .contacts__copy:hover { color: var(--accent); border-color: var(--accent); }
+}
+
+.js .reveal { opacity: .2; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: var(--delay, 0s); }
+.js .reveal--visible { opacity: 1; transform: none; }
+.js .metric__bar { transform: scaleX(0); transition: transform 1.1s .2s var(--ease); }
+.js .reveal--visible .metric__bar { transform: none; }
+.js .reveal--visible .metric__bar--accent { transition-delay: .45s; }
+.js .job::after { transform: scaleX(0); transition: transform 1s .15s var(--ease); }
+.js .job.reveal--visible::after { transform: none; }
+.js .reveal:not(.reveal--visible) .chip { opacity: 0; }
+.js .reveal--visible .chip { animation: fade .5s var(--ease) backwards; }
+.js .reveal--visible .chip:nth-child(2) { animation-delay: .07s; }
+.js .reveal--visible .chip:nth-child(3) { animation-delay: .14s; }
+.js .reveal--visible .chip:nth-child(4) { animation-delay: .21s; }
+.js .reveal--visible .chip:nth-child(5) { animation-delay: .28s; }
+
+@keyframes rise { from { transform: translateY(105%); } to { transform: none; } }
+@keyframes fade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes unveil { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+@media (min-width: 768px) {
+  :root { --gutter: 32px; --header-h: 64px; }
+  .burger { display: none; }
+  .header__viewport { order: 3; margin-left: 0; }
+  .nav {
+    position: static;
+    width: auto;
+    margin-left: auto;
+    border: 0;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+  .nav__list { flex-direction: row; gap: 28px; padding: 0; }
+  .nav__link { padding: 4px 0; border: 0; font-size: 15px; background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0 2px no-repeat; transition: background-size .3s var(--ease); }
+  .nav__link:hover, .nav__link--active { background-size: 100% 2px; }
+
+  .hero { padding-block: 72px 80px; }
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-areas: "head photo" "body photo";
+    gap: 32px 56px;
+    align-items: start;
+  }
+  .photo { width: 100%; }
+  .hero__facts { grid-template-columns: repeat(3, 1fr); gap: 0 24px; }
+  .fact { flex-direction: column; gap: 6px; border-bottom: 0; }
+  .fact__value { flex: none; font-size: 20px; }
+
+  .section { padding-block: 72px; }
+  .skills { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .job { padding: 32px; }
+  .timeline__item { grid-template-columns: 8ch 1fr; }
+}
+
+@media (min-width: 1100px) {
+  .hero { padding-block: 96px 104px; }
+  .hero__inner { grid-template-columns: minmax(0, 1fr) 360px; gap: 40px 96px; }
+  .hero__lead { font-size: 19px; }
+  .section { padding-block: 96px; }
+  .section__inner { grid-template-columns: 260px minmax(0, 1fr); gap: 40px; align-items: start; }
+  .section__title { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--header-h) + 32px); }
+  .skills { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .job { padding: 40px; }
+  .job__body { grid-template-columns: minmax(0, 1fr) 260px; gap: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+  .js .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="header__logo" href="#top" aria-label="В начало страницы">ДМ</a>
+    <span class="header__viewport" id="viewport" aria-hidden="true">mobile</span>
+    <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Открыть меню">
+      <span class="burger__line"></span>
+      <span class="burger__line"></span>
+    </button>
+    <nav class="nav" id="nav" aria-label="Разделы">
+      <ul class="nav__list">
+        <li class="nav__item"><a class="nav__link" href="#experience">Опыт</a></li>
+        <li class="nav__item"><a class="nav__link" href="#skills">Навыки</a></li>
+        <li class="nav__item"><a class="nav__link" href="#education">Образование</a></li>
+        <li class="nav__item"><a class="nav__link" href="#about">О себе</a></li>
+        <li class="nav__item"><a class="nav__link" href="#contacts">Контакты</a></li>
+      </ul>
+    </nav>
+  </div>
+  <span class="header__progress" id="progress"></span>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__head">
+        <span class="hero__eyebrow">Frontend-разработчик · Москва</span>
+        <h1 class="hero__title">
+          <span class="hero__line"><span class="hero__word">Давид</span></span>
+          <span class="hero__line"><span class="hero__word">Мурадян</span></span>
+        </h1>
+      </div>
+
+      <figure class="hero__photo">
+        <div class="photo" id="photo">
+          <img class="photo__img" src="photo.jpg" width="640" height="800" alt="Давид Мурадян, чёрно-белый портрет">
+        </div>
+      </figure>
+
+      <div class="hero__body">
+        <p class="hero__lead">Занимаюсь фронтендом с января 2024 года. Больше года в коммерческой разработке: переводил legacy-интерфейс с jQuery на React и TypeScript, ускорял загрузку и покрывал код тестами. Параллельно учусь в МГТУ им. Баумана.</p>
+        <div class="hero__actions">
+          <a class="button button--primary" href="https://t.me/david_mur" target="_blank" rel="noopener">Написать в Telegram <span class="button__arrow" aria-hidden="true">↗</span></a>
+          <a class="button" href="#experience">Смотреть опыт</a>
+        </div>
+        <dl class="hero__facts">
+          <div class="fact">
+            <dt class="fact__value">1 год 3 мес.</dt>
+            <dd class="fact__label">коммерческой разработки</dd>
+          </div>
+          <div class="fact">
+            <dt class="fact__value">3,2 → 2,0 с</dt>
+            <dd class="fact__label">LCP после оптимизации</dd>
+          </div>
+          <div class="fact">
+            <dt class="fact__value">B2</dt>
+            <dd class="fact__label">английский язык</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="experience">
+    <div class="container section__inner">
+      <h2 class="section__title">Опыт работы</h2>
+      <div class="section__content">
+        <article class="job reveal" id="job">
+          <header class="job__head">
+            <div>
+              <h3 class="job__company">Structura</h3>
+              <p class="job__role">Frontend-разработчик · маркетинговое агентство, Москва</p>
+            </div>
+            <p class="job__period">май 2025 — июль 2026</p>
+          </header>
+          <div class="job__body">
+            <p class="job__text">Перевёл legacy-фронтенд с JavaScript/jQuery на React + TypeScript и разделил монолит на UI, бизнес-логику и API-слой. Собрал переиспользуемую компонентную базу: модальные окна, формы, таблицы с сортировкой и пагинацией. После переноса часть компонентов стала загружаться на 15–20% быстрее. Ввёл строгую типизацию и runtime-валидацию ответов через Zod, свёл работу с API к единому клиенту с обработкой ошибок, таймаутами, retry и отменой запросов. Вместе с командой ускорил загрузку приложения за счёт code splitting, lazy loading и виртуализации длинных списков. Ключевые компоненты покрыл unit-тестами, критичные сценарии — e2e, настроил CI с прогоном проверок на каждый pull request.</p>
+            <div class="metric" role="img" aria-label="LCP сократился с 3,2 до 2,0 секунды">
+              <p class="metric__caption">Largest Contentful Paint</p>
+              <div class="metric__row">
+                <span class="metric__label">было</span>
+                <span class="metric__track"><span class="metric__bar" style="--value:3.2"></span></span>
+                <span class="metric__value">3,2 с</span>
+              </div>
+              <div class="metric__row">
+                <span class="metric__label">стало</span>
+                <span class="metric__track"><span class="metric__bar metric__bar--accent" style="--value:2"></span></span>
+                <span class="metric__value">2,0 с</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="skills">
+    <div class="container section__inner">
+      <h2 class="section__title">Навыки</h2>
+      <div class="section__content">
+        <div class="skills">
+          <div class="skills__group reveal">
+            <h3 class="skills__name">Языки и разметка</h3>
+            <ul class="skills__list">
+              <li class="chip">HTML5</li><li class="chip">CSS3</li><li class="chip">JavaScript</li><li class="chip">TypeScript</li>
+            </ul>
+          </div>
+          <div class="skills__group reveal" style="--delay:.06s">
+            <h3 class="skills__name">Фреймворки</h3>
+            <ul class="skills__list">
+              <li class="chip">React</li><li class="chip">Next.js</li><li class="chip">React Native</li><li class="chip">Electron</li>
+            </ul>
+          </div>
+          <div class="skills__group reveal" style="--delay:.12s">
+            <h3 class="skills__name">Состояние и данные</h3>
+            <ul class="skills__list">
+              <li class="chip">MobX</li><li class="chip">Redux</li><li class="chip">REST API</li><li class="chip">Zod</li><li class="chip">Ajax</li>
+            </ul>
+          </div>
+          <div class="skills__group reveal">
+            <h3 class="skills__name">Тесты и качество</h3>
+            <ul class="skills__list">
+              <li class="chip">Jest</li><li class="chip">React Testing Library</li><li class="chip">Playwright</li><li class="chip">Storybook</li><li class="chip">DevTools</li>
+            </ul>
+          </div>
+          <div class="skills__group reveal" style="--delay:.06s">
+            <h3 class="skills__name">Инфраструктура</h3>
+            <ul class="skills__list">
+              <li class="chip">Git</li><li class="chip">GitHub Actions</li><li class="chip">GitLab CI</li><li class="chip">Vercel</li><li class="chip">Node.js</li>
+            </ul>
+          </div>
+          <div class="skills__group reveal" style="--delay:.12s">
+            <h3 class="skills__name">Языки</h3>
+            <ul class="skills__list">
+              <li class="chip">Русский — родной</li><li class="chip">Английский — B2</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="education">
+    <div class="container section__inner">
+      <h2 class="section__title">Образование и курсы</h2>
+      <div class="section__content">
+        <ol class="timeline">
+          <li class="timeline__item reveal">
+            <span class="timeline__year">2027</span>
+            <div class="timeline__body">
+              <h3 class="timeline__title">МГТУ им. Н. Э. Баумана</h3>
+              <p class="timeline__text">Факультет робототехники и комплексной автоматизации, «Информатика и вычислительная техника». Бакалавриат, выпуск в 2027 году.</p>
+            </div>
+          </li>
+          <li class="timeline__item reveal">
+            <span class="timeline__year">2026</span>
+            <div class="timeline__body">
+              <h3 class="timeline__title">KTS · Начинающий React-разработчик</h3>
+              <p class="timeline__text">Frontend на React и Next.js с применением TypeScript.</p>
+            </div>
+          </li>
+          <li class="timeline__item reveal">
+            <span class="timeline__year">2025</span>
+            <div class="timeline__body">
+              <h3 class="timeline__title">VK Education · Фронтенд-разработчик</h3>
+              <p class="timeline__text">Фронтенд-разработка на TypeScript и React.</p>
+            </div>
+          </li>
+          <li class="timeline__item reveal">
+            <span class="timeline__year">2025</span>
+            <div class="timeline__body">
+              <h3 class="timeline__title">Цифровая кафедра · Веб-разработчик</h3>
+              <p class="timeline__text">Fullstack-разработка на JavaScript.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="container section__inner">
+      <h2 class="section__title">О себе</h2>
+      <div class="section__content">
+        <div class="prose reveal">
+          <p class="prose__lead">Коммерческий стек: JavaScript, TypeScript, React, MobX и Zod. Хорошо знаю Next.js и Redux.</p>
+          <p class="prose__text">Пишу тесты на Jest с React Testing Library и e2e на Playwright. Настраивал CI/CD в GitHub Actions и GitLab CI, деплоил на Vercel.</p>
+          <p class="prose__text">Новые технологии изучаю на пет-проектах. В последнем сделал фулстек: фронтенд на Next.js и MobX, свой бэкенд на Go с JWT-авторизацией и сессиями в Redis.</p>
+          <p class="prose__text">Ищу полную или частичную занятость, проектную работу. Формат: гибрид или удалённо.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contacts">
+    <div class="container section__inner">
+      <h2 class="section__title">Контакты</h2>
+      <div class="section__content">
+        <ul class="contacts reveal">
+          <li class="contacts__row">
+            <span class="contacts__label">Telegram</span>
+            <a class="contacts__value link" href="https://t.me/david_mur" target="_blank" rel="noopener">@david_mur</a>
+          </li>
+          <li class="contacts__row">
+            <span class="contacts__label">Почта</span>
+            <span class="contacts__value" id="email">davmurbusiness@gmail.com</span>
+            <button class="contacts__copy" id="copy-email" type="button" data-copy="email">скопировать</button>
+          </li>
+          <li class="contacts__row">
+            <span class="contacts__label">Телефон</span>
+            <span class="contacts__value" id="phone">+7 (915) 507-18-02</span>
+            <button class="contacts__copy" id="copy-phone" type="button" data-copy="phone">скопировать</button>
+          </li>
+          <li class="contacts__row">
+            <span class="contacts__label">Сетка</span>
+            <a class="contacts__value link" href="https://set.ki/account/MVbiAGH" target="_blank" rel="noopener">set.ki/account/MVbiAGH</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.add('js');
+
+  var viewport = document.getElementById('viewport');
+  function measure() {
+    var w = root.clientWidth;
+    var name = w < 768 ? 'mobile' : w < 1100 ? 'tablet' : 'desktop';
+    viewport.textContent = w + 'px · ' + name;
+  }
+  measure();
+  window.addEventListener('resize', measure);
+  window.addEventListener('load', measure);
+
+  var burger = document.getElementById('burger');
+  var nav = document.getElementById('nav');
+  function setMenu(open) {
+    nav.classList.toggle('nav--open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+  }
+  burger.addEventListener('click', function () {
+    setMenu(burger.getAttribute('aria-expanded') !== 'true');
+  });
+  nav.addEventListener('click', function (e) {
+    if (e.target.closest('.nav__link')) setMenu(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') setMenu(false);
+  });
+
+  var progress = document.getElementById('progress');
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var max = root.scrollHeight - window.innerHeight;
+      progress.style.transform = 'scaleX(' + (max > 0 ? Math.min(window.scrollY / max, 1) : 0) + ')';
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  var items = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var revealer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('reveal--visible');
+        revealer.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    items.forEach(function (el) { revealer.observe(el); });
+
+    var links = document.querySelectorAll('.nav__link');
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        links.forEach(function (link) {
+          link.classList.toggle('nav__link--active', link.getAttribute('href') === '#' + entry.target.id);
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('.section').forEach(function (s) { spy.observe(s); });
+  } else {
+    items.forEach(function (el) { el.classList.add('reveal--visible'); });
+  }
+
+  var job = document.getElementById('job');
+  job.addEventListener('pointermove', function (e) {
+    var r = job.getBoundingClientRect();
+    job.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    job.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+  var photo = document.getElementById('photo');
+  if (window.matchMedia('(hover: hover)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    photo.addEventListener('pointermove', function (e) {
+      var r = photo.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - .5;
+      var y = (e.clientY - r.top) / r.height - .5;
+      photo.style.transform = 'perspective(800px) rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 8) + 'deg)';
+    });
+    photo.addEventListener('pointerleave', function () { photo.style.transform = ''; });
+  }
+
+  document.querySelectorAll('.contacts__copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.getElementById(btn.dataset.copy);
+      function done() {
+        btn.textContent = 'скопировано';
+        btn.classList.add('contacts__copy--done');
+        setTimeout(function () {
+          btn.textContent = 'скопировать';
+          btn.classList.remove('contacts__copy--done');
+        }, 1600);
+      }
+      function select() {
+        var range = document.createRange();
+        range.selectNodeContents(target);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(target.textContent).then(done, select);
+      } else {
+        select();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
